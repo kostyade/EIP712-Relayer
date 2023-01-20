@@ -16,7 +16,7 @@ describe("Relayer", async function () {
   let token, relayer, currentBlock;
 
   beforeEach(async () => {
-    [owner, alice, bob, carol] = await ethers.getSigners();
+    [owner, alice, bob] = await ethers.getSigners();
 
     const Token = await ethers.getContractFactory("TokenERC20Permit");
     token = await Token.deploy();
