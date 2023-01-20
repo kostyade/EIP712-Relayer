@@ -1,0 +1,22 @@
+{
+  "name": "relayer-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./build/index.js",
+    "start:dev": "ts-node-dev --rs ./src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
+    "express": "^4.18.2",
+    "helmet": "^6.0.1",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.15",
+    "typescript": "^4.9.4"
+  }
+}
