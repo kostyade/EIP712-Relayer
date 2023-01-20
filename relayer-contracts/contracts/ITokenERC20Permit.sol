@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.0;
 
 interface ITokenERC20Permit {
     function DOMAIN_SEPARATOR() external view returns (bytes32);
@@ -29,7 +29,7 @@ interface ITokenERC20Permit {
 
     function mint(address _to, uint256 _amount) external;
 
-    function name() external view returns (string);
+    function name() external view returns (string memory);
 
     function nonces(address owner) external view returns (uint256);
 
@@ -38,12 +38,10 @@ interface ITokenERC20Permit {
         address spender,
         uint256 value,
         uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        bytes calldata signature
     ) external;
 
-    function symbol() external view returns (string);
+    function symbol() external view returns (string memory);
 
     function totalSupply() external view returns (uint256);
 

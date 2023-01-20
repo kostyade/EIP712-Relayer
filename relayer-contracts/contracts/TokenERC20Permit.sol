@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+
+/**
+ * @dev influenced by OZ ERC20 Permit extension and UniswapV2LP token
+ */
 
 contract TokenERC20Permit is ERC20 {
     using Counters for Counters.Counter;
@@ -53,7 +59,6 @@ contract TokenERC20Permit is ERC20 {
         );
 
         bytes32 hash = ECDSA.toTypedDataHash(DOMAIN_SEPARATOR, structHash);
-
         address signer = ECDSA.recover(hash, signature);
         require(signer == owner, "ERC20Permit: invalid signature");
 

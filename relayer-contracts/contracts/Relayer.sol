@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
 import "./ITokenERC20Permit.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
- * @dev forked and influenced by OZ MinimalForwarder
+ * @dev influenced by OZ MinimalForwarder, 0x, Uniswap
  */
 
-contract MinimalForwarder {
+contract Relayer {
     using ECDSA for bytes32;
 
     struct TransferRequest {
@@ -19,13 +20,16 @@ contract MinimalForwarder {
         uint256 deadline;
     }
 
-    event Log(string message);
+    event TransferSuccess(address owner, uint256 value);
+
+    event TransferFailed(address owner, uint256 value, bytes reason);
 
     function verify(
         TransferRequest calldata req,
-        bytes calldata signature
+        bytes calldata signature,
+        address tokenAddress
     ) public view returns (bool) {
-        ITokenERC20Permit relayedToken = ITokenERC20Permit(req.tokenAddress);
+        ITokenERC20Permit relayedToken = ITokenERC20Permit(tokenAddress);
 
         bytes32 structHash = keccak256(
             abi.encode(
@@ -43,37 +47,56 @@ contract MinimalForwarder {
             .recover(signature);
 
         return
-            relayedToken.nonces(req.owner) == req.nonce && signer == req.from;
+            relayedToken.nonces(req.owner) == req.nonce && signer == req.owner;
     }
 
-    function transfer(
+    function batchDeposit(
+        TransferRequest[] calldata _requests,
+        bytes[] calldata _signatures,
+        address[] calldata _tokenAddresses
+    ) external {
+        require(
+            _requests.length == _signatures.length,
+            "signatures must match requests"
+        );
+
+        for (uint256 i = 0; i < _requests.length; ++i) {
+            deposit(_requests[i], _signatures[i], _tokenAddresses[i]);
+        }
+    }
+
+    function deposit(
         TransferRequest calldata req,
-        bytes calldata signature
-    ) public payable returns (bool, bytes memory) {
+        bytes calldata signature,
+        address tokenAddress
+    ) public {
         require(
             req.spender == address(this),
             "spender and relayer does not match"
         );
-        require(verify(req, signature), "signature does not match request");
+        require(
+            verify(req, signature, tokenAddress),
+            "signature does not match request"
+        );
 
-        ITokenERC20Permit relayedToken = ITokenERC20Permit(req.tokenAddress);
+        ITokenERC20Permit relayedToken = ITokenERC20Permit(tokenAddress);
 
         try
             relayedToken.permit(
                 req.owner,
-                req.sender,
+                req.spender,
                 req.value,
-                req.nonce,
-                req.deadline
+                req.deadline,
+                signature
             )
         {
-            try relayedToken.transferFrom(req.owner, address(0), req.value) {
-                emit Log("success");
-            } catch {
-                emit Log("transfer failed");
+            try relayedToken.transferFrom(req.owner, req.spender, req.value) {
+                emit TransferSuccess(req.owner, req.value);
+            } catch (bytes memory reason) {
+                emit TransferFailed(req.owner, req.value, reason);
             }
-        } catch {
-            emit Log("permit failed");
+        } catch (bytes memory reason) {
+            emit TransferFailed(req.owner, req.value, reason);
         }
     }
 }
