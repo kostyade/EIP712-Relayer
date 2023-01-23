@@ -3,6 +3,8 @@
 Proof of Concept of simpke relayer service that batches user submitted transactions
 and submit multiple transactions in one meta-transaction.
 
+![UI](screenshot.png)
+
 ## Contents
 
 - [Intro](#bookmark_tabs-introduction)
