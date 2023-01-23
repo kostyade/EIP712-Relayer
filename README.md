@@ -1,6 +1,6 @@
 # EIP712 Relayer Service with batch transactions
 
-Proof of Concept of simpke relayer service that batches user submitted transactions
+Proof of Concept of simple relayer service that batches user submitted transactions
 and submit multiple transactions in one meta-transaction.
 
 ![UI](screenshot.png)
