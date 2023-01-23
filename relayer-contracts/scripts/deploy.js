@@ -14,6 +14,9 @@ async function main() {
   await token.mint(alice.address, 100);
   await token.mint(bob.address, 100);
   await token.mint(owner.address, 100);
+
+  console.log(`Token: ${token.address}`);
+  console.log(`Relayer: ${relayer.address}`);
 }
 
 main().catch((error) => {

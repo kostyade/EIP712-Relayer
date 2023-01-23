@@ -5,14 +5,18 @@
   text-align: center;
 }
 
-.app-header{
+.app-header {
   display: flex;
   justify-content: space-between;
 }
-.app-container{
+.app-container {
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.balance {
+  margin-bottom: 3rem;
 }

@@ -6,7 +6,7 @@ import {
   getDefaultClient,
 } from "connectkit";
 import { localhost } from "wagmi/chains";
-import { SignDataButton } from "./components/signDataButton/signDataButton";
+import { DepositContainer } from "./components/depositContainer/depositContainer";
 
 const client = createClient(
   getDefaultClient({
@@ -26,9 +26,7 @@ function App() {
               <ConnectKitButton />
             </div>
           </header>
-          <div className="app-container">
-            <SignDataButton/>
-          </div>
+          <DepositContainer />
         </div>
       </ConnectKitProvider>
     </WagmiConfig>

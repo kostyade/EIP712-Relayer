@@ -45,6 +45,7 @@ contract TokenERC20Permit is ERC20 {
         uint deadline,
         bytes calldata signature
     ) external {
+        console.log(block.timestamp, deadline);
         require(block.timestamp <= deadline, "ERC20Permit: expired deadline");
 
         bytes32 structHash = keccak256(
